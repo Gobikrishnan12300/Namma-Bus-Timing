@@ -1,0 +1,9 @@
+{
+  "appName": "Namma Bus Timing",
+  "appShortName": "Namma Bus",
+  "appTagline": "Thammampatti bus stand — time (நேரம்) and bus name (பேருந்து)",
+  "appDescription": "Bus timings from Thammampatti to Sendharapatti, Attur, Trichy, Rasipuram–Salem and more.",
+  "packageName": "namma-bus-timing",
+  "themeColor": "#1e3a5f",
+  "backgroundColor": "#f3f4f6"
+}
