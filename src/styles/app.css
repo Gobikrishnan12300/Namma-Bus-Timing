@@ -163,29 +163,91 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
 }
 
-.route-card-header h2 {
-  margin: 0;
-  font-size: clamp(1rem, 3.5vw, 1.15rem);
-  line-height: 1.35;
+.route-endpoints {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.route-endpoint {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: #f8fafc;
+}
+
+.route-endpoint--from {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.route-endpoint--to {
+  border-color: #bbf7d0;
+  background: #ecfdf5;
+}
+
+.route-endpoint-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.route-endpoint-name {
+  display: block;
+  font-size: clamp(0.95rem, 3.2vw, 1.05rem);
+  font-weight: 700;
+  line-height: 1.3;
   word-break: break-word;
 }
 
-.route-tamil {
-  margin: 4px 0 0;
-  color: var(--primary-strong);
-  font-size: clamp(0.88rem, 3vw, 0.95rem);
+.route-endpoint-tamil {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.82rem;
   font-weight: 600;
-  line-height: 1.4;
+  color: var(--primary-strong);
+  line-height: 1.35;
 }
 
-.route-via {
-  margin: 4px 0 0;
-  color: var(--text-muted);
-  font-size: 0.85rem;
+.route-arrow {
+  align-self: center;
+  flex-shrink: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.route-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.route-via-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 .route-count {
@@ -249,6 +311,13 @@
   font-size: 0.8rem;
 }
 
+.col-route {
+  min-width: 120px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  word-break: break-word;
+}
+
 .col-time {
   width: 90px;
   font-weight: 700;
@@ -264,6 +333,10 @@
 
 .col-bus--gov {
   color: #047857;
+}
+
+.col-bus--town {
+  color: #6d28d9;
 }
 
 .empty-state {
@@ -337,8 +410,21 @@
     align-items: stretch;
   }
 
-  .route-count {
-    align-self: flex-start;
+  .route-endpoints {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .route-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+
+  .route-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .schedule-wrapper {
