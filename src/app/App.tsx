@@ -14,21 +14,31 @@ import {
 
 const ENRICHED_ROUTES: EnrichedRoute[] = enrichRoutes(BUS_ROUTES);
 
+function routeOptionLabel(route: EnrichedRoute): string {
+  const via = route.via ? ` (via ${route.via})` : '';
+  return `${route.from} → ${route.to}${via}`;
+}
+
 const App: React.FC = () => {
-  const [destinationFilter, setDestinationFilter] = useState<string>('all');
+  const [routeFilter, setRouteFilter] = useState<string>('all');
   const [searchText, setSearchText] = useState<string>('');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
 
-  const destinations = useMemo(
-    () => ENRICHED_ROUTES.map((r) => ({ id: r.id, label: r.to, tamil: r.toTamil })),
+  const routeOptions = useMemo(
+    () =>
+      ENRICHED_ROUTES.map((r) => ({
+        id: r.id,
+        label: routeOptionLabel(r),
+      })),
     []
   );
 
   const filteredRoutes = useMemo(() => {
     const query = searchText.trim().toLowerCase();
+    const queryRaw = searchText.trim();
 
     return ENRICHED_ROUTES.map((route) => {
-      if (destinationFilter !== 'all' && route.id !== destinationFilter) {
+      if (routeFilter !== 'all' && route.id !== routeFilter) {
         return null;
       }
 
@@ -37,11 +47,13 @@ const App: React.FC = () => {
         if (!query) return true;
 
         return (
+          route.from.toLowerCase().includes(query) ||
           route.to.toLowerCase().includes(query) ||
-          route.toTamil?.includes(searchText.trim()) ||
+          route.fromTamil?.includes(queryRaw) ||
+          route.toTamil?.includes(queryRaw) ||
           route.via?.toLowerCase().includes(query) ||
           dep.busName.toLowerCase().includes(query) ||
-          dep.time.includes(searchText.trim())
+          dep.time.includes(queryRaw)
         );
       });
 
@@ -49,7 +61,7 @@ const App: React.FC = () => {
 
       return { ...route, departures: visibleDepartures };
     }).filter((r): r is EnrichedRoute => r !== null);
-  }, [destinationFilter, searchText, timeFilter]);
+  }, [routeFilter, searchText, timeFilter]);
 
   const totalBuses = filteredRoutes.reduce((sum, r) => sum + r.departures.length, 0);
 
@@ -57,7 +69,10 @@ const App: React.FC = () => {
     <div className="app-root">
       <header className="app-header">
         <div>
-          <h1>{APP_NAME}</h1>
+          <h1 className="app-title">
+            <span className="app-title-name">{APP_NAME}</span>
+            <span className="app-title-credit">(Created by Gobikrishnan)</span>
+          </h1>
           <p className="app-subtitle">{APP_TAGLINE}</p>
         </div>
         <div className="app-badge">{totalBuses} buses listed</div>
@@ -68,17 +83,16 @@ const App: React.FC = () => {
           <h2>Search routes</h2>
           <div className="filters-grid">
             <div className="field">
-              <label htmlFor="destination">Destination</label>
+              <label htmlFor="route">Route</label>
               <select
-                id="destination"
-                value={destinationFilter}
-                onChange={(e) => setDestinationFilter(e.target.value)}
+                id="route"
+                value={routeFilter}
+                onChange={(e) => setRouteFilter(e.target.value)}
               >
-                <option value="all">All destinations</option>
-                {destinations.map((dest) => (
-                  <option key={dest.id} value={dest.id}>
-                    {dest.label}
-                    {dest.tamil ? ` (${dest.tamil})` : ''}
+                <option value="all">All routes</option>
+                {routeOptions.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
                   </option>
                 ))}
               </select>
@@ -111,8 +125,8 @@ const App: React.FC = () => {
             </div>
           </div>
           <p className="filters-hint">
-            Data from Thammampatti bus stand timing boards. Times shown as on the board (e.g. 6.00, 1.21).
-            Please confirm at the stand before travel.
+            Timings from local bus stands. Each route shows as From → To. Times match the boards
+            (e.g. 6.00, 1.21). Please confirm at the stand before travel.
           </p>
         </section>
 
@@ -129,7 +143,13 @@ const App: React.FC = () => {
                   <h2>
                     {route.from} → {route.to}
                   </h2>
-                  {route.toTamil && <p className="route-tamil">{route.toTamil}</p>}
+                  {(route.fromTamil || route.toTamil) && (
+                    <p className="route-tamil">
+                      {route.fromTamil && <span>{route.fromTamil}</span>}
+                      {route.fromTamil && route.toTamil && <span> → </span>}
+                      {route.toTamil && <span>{route.toTamil}</span>}
+                    </p>
+                  )}
                   {route.via && <p className="route-via">Via: {route.via}</p>}
                 </div>
                 <span className="route-count">{route.departures.length} buses</span>
